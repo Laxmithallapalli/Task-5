@@ -1,0 +1,127 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Course {
+    private String code;
+    private String title;
+    private String description;
+    private int capacity;
+    private List<String> schedule;
+    private List<Student> enrolledStudents;
+
+    public Course(String code, String title, String description, int capacity, List<String> schedule) {
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.capacity = capacity;
+        this.schedule = schedule;
+        this.enrolledStudents = new ArrayList<>();
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public List<String> getSchedule() {
+        return schedule;
+    }
+
+    public List<Student> getEnrolledStudents() {
+        return enrolledStudents;
+    }
+
+    public boolean enrollStudent(Student student) {
+        if (enrolledStudents.size() < capacity) {
+            enrolledStudents.add(student);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeStudent(Student student) {
+        return enrolledStudents.remove(student);
+    }
+}
+
+class Student {
+    private String id;
+    private String name;
+    private List<Course> registeredCourses;
+
+    public Student(String id, String name) {
+        this.id = id;
+        this.name = name;
+        this.registeredCourses = new ArrayList<>();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Course> getRegisteredCourses() {
+        return registeredCourses;
+    }
+
+    public void registerCourse(Course course) {
+        registeredCourses.add(course);
+        course.enrollStudent(this);
+    }
+
+    public void dropCourse(Course course) {
+        registeredCourses.remove(course);
+        course.removeStudent(this);
+    }
+}
+
+public class CourseRegistrationSystem {
+    public static void main(String[] args) {
+        // Creating courses
+        Course javaCourse = new Course("CS101", "Introduction to Java Programming", "Learn basics of Java programming language", 30, List.of("Monday 10:00 AM"));
+        Course pythonCourse = new Course("CS102", "Python Programming", "Introduction to Python programming language", 25, List.of("Wednesday 2:00 PM"));
+
+        // Creating students
+        Student student1 = new Student("S001", "John Doe");
+        Student student2 = new Student("S002", "Jane Smith");
+
+        // Registering students to courses
+        student1.registerCourse(javaCourse);
+        student1.registerCourse(pythonCourse);
+        student2.registerCourse(pythonCourse);
+
+        // Displaying registered courses for each student
+        System.out.println("Registered courses for " + student1.getName() + ":");
+        for (Course course : student1.getRegisteredCourses()) {
+            System.out.println(course.getCode() + " - " + course.getTitle());
+        }
+
+        System.out.println("Registered courses for " + student2.getName() + ":");
+        for (Course course : student2.getRegisteredCourses()) {
+            System.out.println(course.getCode() + " - " + course.getTitle());
+        }
+
+        // Dropping a course
+        student1.dropCourse(pythonCourse);
+
+        // Displaying updated registered courses for student1
+        System.out.println("Updated registered courses for " + student1.getName() + ":");
+        for (Course course : student1.getRegisteredCourses()) {
+            System.out.println(course.getCode() + " - " + course.getTitle());
+        }
+    }
+}
